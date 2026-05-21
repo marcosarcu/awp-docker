@@ -1,6 +1,6 @@
 # awp-docker
 
-Imágenes Docker reutilizables para los sitios WordPress de la "stack AWP" (Agency WordPress).
+Imágenes Docker reutilizables para los sitios WordPress de AWP Host.
 
 ## Imágenes publicadas
 
@@ -34,16 +34,3 @@ services:
     # ...rest
 ```
 
-## Forzar rebuild manual
-
-GitHub Actions → workflow `build-and-push` → Run workflow.
-
-## Estructura
-
-```
-nginx/        Dockerfile + default.conf + fastcgi-cache.conf (configs horneadas)
-php-fpm/      Dockerfile + conf/zz-custom.ini + conf/crontab
-.github/      workflows/build-and-push.yml
-```
-
-Sitios que consumen: `mastercoip`, `coipmethod`.
