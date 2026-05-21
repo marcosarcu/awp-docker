@@ -1,0 +1,88 @@
+name: build-and-push
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'nginx/**'
+      - 'php-fpm/**'
+      - '.github/workflows/build-and-push.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  packages: write
+
+jobs:
+  changes:
+    runs-on: ubuntu-latest
+    outputs:
+      nginx: ${{ steps.filter.outputs.nginx }}
+      php-fpm: ${{ steps.filter.outputs.php-fpm }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dorny/paths-filter@v3
+        id: filter
+        with:
+          filters: |
+            nginx:
+              - 'nginx/**'
+            php-fpm:
+              - 'php-fpm/**'
+
+  build:
+    needs: changes
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - name: awp-nginx
+            context: ./nginx
+            changed: ${{ needs.changes.outputs.nginx }}
+          - name: awp-php-fpm
+            context: ./php-fpm
+            changed: ${{ needs.changes.outputs.php-fpm }}
+    steps:
+      - name: Decide if build is needed
+        id: decide
+        run: |
+          if [ "${{ matrix.changed }}" = "true" ] || [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            echo "run=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "run=false" >> "$GITHUB_OUTPUT"
+            echo "No changes in ${{ matrix.name }}, skipping."
+          fi
+
+      - uses: actions/checkout@v4
+        if: steps.decide.outputs.run == 'true'
+
+      - uses: docker/setup-buildx-action@v3
+        if: steps.decide.outputs.run == 'true'
+
+      - uses: docker/login-action@v3
+        if: steps.decide.outputs.run == 'true'
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Compute short sha
+        if: steps.decide.outputs.run == 'true'
+        id: sha
+        run: echo "short=$(git rev-parse --short HEAD)" >> "$GITHUB_OUTPUT"
+
+      - uses: docker/build-push-action@v6
+        if: steps.decide.outputs.run == 'true'
+        with:
+          context: ${{ matrix.context }}
+          platforms: linux/amd64
+          push: true
+          tags: |
+            ghcr.io/marcosarcu/${{ matrix.name }}:latest
+            ghcr.io/marcosarcu/${{ matrix.name }}:sha-${{ steps.sha.outputs.short }}
+          cache-from: type=gha,scope=${{ matrix.name }}
+          cache-to: type=gha,scope=${{ matrix.name }},mode=max
+          labels: |
+            org.opencontainers.image.source=https://github.com/marcosarcu/awp-docker
+            org.opencontainers.image.revision=${{ github.sha }}

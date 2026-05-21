@@ -1,0 +1,2 @@
+*/2 * * * * cd /var/www/html && php -d max_execution_time=300 -d memory_limit=512M /usr/local/bin/wp cron event run --due-now >/dev/null 2>&1
+* * * * * cd /var/www/html && php -d max_execution_time=300 -d memory_limit=512M /usr/local/bin/wp action-scheduler run --batches=2 --quiet >/dev/null 2>&1
