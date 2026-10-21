@@ -44,10 +44,15 @@ RUN set -eux; \
         opcache \
         zip \
         bcmath; \
-    pecl install "redis-${PECL_REDIS_VERSION}"; \
-    docker-php-ext-enable redis; \
-    pecl install "imagick-${PECL_IMAGICK_VERSION}"; \
-    docker-php-ext-enable imagick; \
+    # redis e imagick desde los tags de GitHub y no de pecl.php.net (que se cae seguido).
+    mkdir -p /usr/src/php/ext/redis /usr/src/php/ext/imagick; \
+    curl -fsSL "https://github.com/phpredis/phpredis/archive/refs/tags/${PECL_REDIS_VERSION}.tar.gz" \
+        | tar -xz -C /usr/src/php/ext/redis --strip-components=1; \
+    curl -fsSL "https://github.com/Imagick/imagick/archive/refs/tags/${PECL_IMAGICK_VERSION}.tar.gz" \
+        | tar -xz -C /usr/src/php/ext/imagick --strip-components=1; \
+    sed -i "s/@PACKAGE_VERSION@/${PECL_IMAGICK_VERSION}/" /usr/src/php/ext/imagick/php_imagick.h; \
+    docker-php-ext-install -j"$(nproc)" redis imagick; \
+    docker-php-source delete; \
     apk del .build-deps; \
     rm -rf /tmp/pear /var/cache/apk/*
 
