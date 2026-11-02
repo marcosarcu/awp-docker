@@ -65,6 +65,12 @@ RUN set -eux; \
     chmod +x /usr/local/bin/wp
 
 COPY conf/zz-custom.ini /usr/local/etc/php/conf.d/zz-custom.ini
+# Hardening del pool FPM (no afecta a php-cli). Se anade a la seccion [www] de www.conf.
+COPY conf/zz-fpm-hardening.conf /tmp/zz-fpm-hardening.conf
+RUN set -eux; \
+    printf '\n' >> /usr/local/etc/php-fpm.d/www.conf; \
+    cat /tmp/zz-fpm-hardening.conf >> /usr/local/etc/php-fpm.d/www.conf; \
+    rm -f /tmp/zz-fpm-hardening.conf
 COPY conf/crontab /etc/crontabs/www-data
 COPY conf/imagemagick-policy.xml /etc/ImageMagick-7/policy.xml
 
