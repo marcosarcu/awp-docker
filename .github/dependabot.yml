@@ -1,14 +1,13 @@
 # Gestionado por el plan de seguridad de dependencias.
 # - Librerías (composer/npm/uv/pip): open-pull-requests-limit 0 = sin updates de versión; Dependabot
 #   solo abre PRs cuando una versión nueva arregla una vulnerabilidad (security updates).
-# - Imágenes Docker, compose y GitHub Actions: updates de versión semanales, agrupados en un PR.
+# - Imágenes Docker, compose y GitHub Actions: updates de versión diarios, agrupados en un PR.
 version: 2
 updates:
 - package-ecosystem: github-actions
   directory: /
   schedule:
-    interval: weekly
-    day: monday
+    interval: daily
     time: '06:00'
     timezone: America/Argentina/Buenos_Aires
   groups:
@@ -18,8 +17,7 @@ updates:
 - package-ecosystem: docker
   directory: /nginx
   schedule:
-    interval: weekly
-    day: monday
+    interval: daily
     time: '06:00'
     timezone: America/Argentina/Buenos_Aires
   groups:
@@ -29,8 +27,7 @@ updates:
 - package-ecosystem: docker
   directory: /php-fpm
   schedule:
-    interval: weekly
-    day: monday
+    interval: daily
     time: '06:00'
     timezone: America/Argentina/Buenos_Aires
   groups:
