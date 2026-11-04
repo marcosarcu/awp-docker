@@ -1,7 +1,7 @@
 # Auditoría de dependencias e imágenes. Falla si hay vulnerabilidades HIGH o CRITICAL.
 # - composer audit / npm audit / pip-audit: librerías contra las bases públicas de advisories.
 # - Trivy: la imagen Docker ya armada (SO base, binarios y librerías).
-# Las vulnerabilidades publicadas después del deploy las cubre el reescaneo semanal en los hosts
+# Las vulnerabilidades publicadas después del deploy las cubre el reescaneo diario en los hosts
 # (host-vulncheck images).
 name: Security
 
