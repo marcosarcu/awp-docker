@@ -38,6 +38,8 @@ FROM nginxinc/nginx-unprivileged:${NGINX_VERSION}-alpine
 ARG NGINX_VERSION
 
 USER root
+# Parches de seguridad de los paquetes de Alpine publicados después de la imagen base.
+RUN apk upgrade --no-cache
 
 COPY --from=builder /build/nginx-${NGINX_VERSION}/objs/ngx_http_cache_purge_module.so /etc/nginx/modules/
 
