@@ -76,4 +76,7 @@ COPY conf/imagemagick-policy.xml /etc/ImageMagick-7/policy.xml
 
 WORKDIR /var/www/html
 
+# Parches de seguridad de los paquetes de Alpine publicados después de la imagen base.
+RUN apk upgrade --no-cache
+
 USER www-data
