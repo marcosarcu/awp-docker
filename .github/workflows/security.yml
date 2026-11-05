@@ -28,7 +28,7 @@ jobs:
       matrix:
         image: [{"name": "nginx-dockerfile", "dockerfile": "nginx/Dockerfile", "context": "nginx"}, {"name": "php-fpm-dockerfile", "dockerfile": "php-fpm/Dockerfile", "context": "php-fpm"}]
     steps:
-      - uses: actions/checkout@v7
+      - uses: actions/checkout@v7.0.1
       - name: Build de la imagen
         run: docker build -t "security-scan/${{ matrix.image.name }}:${{ github.sha }}" -f "${{ matrix.image.dockerfile }}" "${{ matrix.image.context }}"
       # Los headers del kernel (linux-libc-dev / linux-headers) vienen en la imagen pero no se
