@@ -2,6 +2,7 @@
 # - Librerías (composer/npm/uv/pip): open-pull-requests-limit 0 = sin updates de versión; Dependabot
 #   solo abre PRs cuando una versión nueva arregla una vulnerabilidad (security updates).
 # - Imágenes Docker, compose y GitHub Actions: updates de versión diarios, agrupados en un PR.
+#   Imágenes: solo minor y patch; los saltos major (Postgres, MariaDB, Redis, Node) se planifican aparte.
 version: 2
 updates:
 - package-ecosystem: github-actions
@@ -24,6 +25,10 @@ updates:
     docker:
       patterns:
       - '*'
+  ignore:
+  - dependency-name: '*'
+    update-types:
+    - version-update:semver-major
 - package-ecosystem: docker
   directory: /php-fpm
   schedule:
@@ -34,3 +39,7 @@ updates:
     docker:
       patterns:
       - '*'
+  ignore:
+  - dependency-name: '*'
+    update-types:
+    - version-update:semver-major
