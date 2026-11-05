@@ -29,6 +29,9 @@ updates:
   - dependency-name: '*'
     update-types:
     - version-update:semver-major
+  - dependency-name: php
+    update-types:
+    - version-update:semver-minor
 - package-ecosystem: docker
   directory: /php-fpm
   schedule:
@@ -43,3 +46,6 @@ updates:
   - dependency-name: '*'
     update-types:
     - version-update:semver-major
+  - dependency-name: php
+    update-types:
+    - version-update:semver-minor
