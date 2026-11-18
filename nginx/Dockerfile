@@ -1,5 +1,5 @@
-ARG NGINX_VERSION=1.30.6
-ARG NGINX_TARBALL_SHA256=3cf46f5ed7504d460125866b7bea99fb357f31d887e2e63b35503310e9b8b6c8
+ARG NGINX_VERSION=1.30.7
+ARG NGINX_TARBALL_SHA256=2565b5c837050e958f70fb0f73c48e2bca4542ad349fd356f46fb0c72610bc6e
 ARG NGX_CACHE_PURGE_COMMIT=285354eddd5675c765ba2b79dac09f5d3065b22f
 
 FROM nginx:${NGINX_VERSION}-alpine AS builder
@@ -34,7 +34,9 @@ RUN cd nginx-${NGINX_VERSION} \
  && ./configure --with-compat --add-dynamic-module=../ngx_cache_purge \
  && make modules
 
-FROM nginxinc/nginx-unprivileged:${NGINX_VERSION}-alpine
+# La imagen unprivileged se baja de GHCR: nginx la publica ahí y en ECR, pero dejó de subirla a
+# Docker Hub (nginxinc/nginx-unprivileged no tiene 1.30.7, que corrige CVE-2026-123007 y CVE-2026-123633).
+FROM ghcr.io/nginx/nginx-unprivileged:${NGINX_VERSION}-alpine
 ARG NGINX_VERSION
 
 USER root
