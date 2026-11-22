@@ -84,6 +84,8 @@ jobs:
             ghcr.io/marcosarcu/${{ matrix.name }}:sha-${{ steps.sha.outputs.short }}
           cache-from: type=gha,scope=${{ matrix.name }}
           cache-to: type=gha,scope=${{ matrix.name }},mode=max
+          build-args: |
+            APK_UPGRADE=${{ github.run_id }}
           labels: |
             org.opencontainers.image.source=https://github.com/marcosarcu/awp-docker
             org.opencontainers.image.revision=${{ github.sha }}

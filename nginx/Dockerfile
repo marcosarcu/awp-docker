@@ -41,7 +41,10 @@ ARG NGINX_VERSION
 
 USER root
 # Parches de seguridad de los paquetes de Alpine publicados después de la imagen base.
-RUN apk upgrade --no-cache
+# APK_UPGRADE cambia en cada corrida del CI (run_id): sin eso la caché de GHA reusa la capa
+# y el upgrade queda congelado en la primera vez que se armó.
+ARG APK_UPGRADE=local
+RUN echo "apk upgrade (${APK_UPGRADE})" && apk upgrade --no-cache
 
 COPY --from=builder /build/nginx-${NGINX_VERSION}/objs/ngx_http_cache_purge_module.so /etc/nginx/modules/
 
